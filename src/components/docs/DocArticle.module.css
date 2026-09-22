@@ -1,0 +1,138 @@
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--toc-width);
+  gap: 2.5rem;
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding: 2.5rem 2rem 4rem;
+}
+
+.article {
+  min-width: 0;
+}
+
+.header {
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.breadcrumb {
+  margin-bottom: 1rem;
+}
+
+.summary {
+  margin-top: 0.5rem;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.pager {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.pagerLink {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem 1rem;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.625rem;
+  transition: border-color 120ms ease;
+}
+
+.pagerLink:hover {
+  border-color: var(--color-border-strong);
+}
+
+.pagerLink:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.pagerNext {
+  text-align: right;
+}
+
+.pagerLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-subtle);
+}
+
+.pagerNext .pagerLabel {
+  justify-content: flex-end;
+}
+
+.pagerTitle {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-accent);
+}
+
+.toc {
+  position: sticky;
+  top: calc(var(--header-height) + 2.5rem);
+  align-self: start;
+}
+
+.tocTitle {
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.tocList {
+  list-style: none;
+  border-left: 1px solid var(--color-border);
+}
+
+.tocLink {
+  display: block;
+  padding: 0.25rem 0.75rem;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-subtle);
+}
+
+/* An h3 sits a step in from the h2 above it. */
+.tocLink[data-level="3"] {
+  padding-left: 1.5rem;
+}
+
+.tocLink:hover {
+  color: var(--color-text);
+}
+
+@media (max-width: 1180px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .toc {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .layout {
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .pager {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

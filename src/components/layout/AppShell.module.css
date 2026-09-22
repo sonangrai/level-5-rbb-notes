@@ -1,0 +1,43 @@
+.shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background: var(--color-bg-canvas);
+}
+
+.body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+  align-items: start;
+}
+
+.sidebar {
+  position: sticky;
+  top: var(--header-height);
+  height: calc(100dvh - var(--header-height));
+  background: var(--color-bg-surface);
+  border-right: 1px solid var(--color-border);
+}
+
+.main {
+  min-width: 0;
+}
+
+/* The drawer body pads its content and scrolls it; the sidebar does both
+   itself, so hand it the box and get out of the way. */
+.drawer :global(.sh-drawer__body) {
+  display: flex;
+  padding: 0;
+  overflow: hidden;
+}
+
+@media (max-width: 960px) {
+  .body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sidebar {
+    display: none;
+  }
+}
