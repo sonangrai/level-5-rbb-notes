@@ -33,6 +33,7 @@
   flex-direction: column;
   gap: 0.125rem;
   list-style: none;
+  padding-left: 1em;
 }
 
 .link {

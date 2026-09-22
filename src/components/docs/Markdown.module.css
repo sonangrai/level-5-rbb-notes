@@ -72,6 +72,25 @@
   margin-top: 1.25rem;
 }
 
+/*
+ * An Alert paints its own foreground, but everything a callout's body renders
+ * as — the Text behind a paragraph, the list styles, a link — sets a colour of
+ * its own and would otherwise sit unreadably on the alert background. Inside a
+ * callout they all defer to whatever colour the Alert is using.
+ */
+.callout :is(p, ul, ol, li, a, code) {
+  color: inherit;
+}
+
+.callout li::marker {
+  color: inherit;
+}
+
+/* Inline code keeps its shape, tinted from the alert's foreground instead. */
+.callout .inlineCode {
+  background: color-mix(in srgb, currentColor 14%, transparent);
+}
+
 .tableWrap {
   overflow-x: auto;
   margin-top: 1.25rem;

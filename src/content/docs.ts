@@ -37,6 +37,10 @@ const SECTIONS: { id: string; title: string }[] = [
   { id: "getting-started", title: "Getting started" },
   { id: "guides", title: "Guides" },
   { id: "reference", title: "Reference" },
+  {
+    id: "networks",
+    title: "Communication and Computer Network Technologies",
+  },
 ];
 
 const DOCS_DIR = path.join(process.cwd(), "src", "content", "docs");

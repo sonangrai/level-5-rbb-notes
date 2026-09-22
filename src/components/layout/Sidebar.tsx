@@ -104,7 +104,6 @@ export function Sidebar({ sections, onNavigate }: SidebarProps) {
                       onClick={onNavigate}
                     >
                       <span className={styles.linkTitle}>{doc.title}</span>
-                      <span className={styles.linkSummary}>{doc.summary}</span>
                     </Link>
                   </li>
                 );
