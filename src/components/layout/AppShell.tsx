@@ -1,5 +1,7 @@
 "use client";
 
+import { ConsentBanner } from "rbb/components/reading/ConsentBanner";
+import { ReadingProgressProvider } from "rbb/components/reading/ReadingProgress";
 import type { DocSection } from "rbb/content/docs";
 import { type ReactNode, useState } from "react";
 import { Drawer } from "sonahang-ui";
@@ -24,29 +26,33 @@ export function AppShell({
   const [navOpen, setNavOpen] = useState(false);
 
   return (
-    <div className={styles.shell}>
-      <Header onOpenNav={() => setNavOpen(true)} />
+    <ReadingProgressProvider>
+      <div className={styles.shell}>
+        <Header onOpenNav={() => setNavOpen(true)} />
 
-      <div className={styles.body}>
-        <aside className={styles.sidebar}>
-          <Sidebar sections={sections} />
-        </aside>
+        <div className={styles.body}>
+          <aside className={styles.sidebar}>
+            <Sidebar sections={sections} />
+          </aside>
 
-        <main className={styles.main} id="content">
-          {children}
-        </main>
+          <main className={styles.main} id="content">
+            {children}
+          </main>
+        </div>
+
+        <Drawer
+          open={navOpen}
+          onClose={() => setNavOpen(false)}
+          side="left"
+          size="sm"
+          title="Documents"
+          className={styles.drawer}
+        >
+          <Sidebar sections={sections} onNavigate={() => setNavOpen(false)} />
+        </Drawer>
+
+        <ConsentBanner />
       </div>
-
-      <Drawer
-        open={navOpen}
-        onClose={() => setNavOpen(false)}
-        side="left"
-        size="sm"
-        title="Documents"
-        className={styles.drawer}
-      >
-        <Sidebar sections={sections} onNavigate={() => setNavOpen(false)} />
-      </Drawer>
-    </div>
+    </ReadingProgressProvider>
   );
 }

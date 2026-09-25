@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { LogoMark, MenuIcon } from "rbb/components/icons";
+import { ScrollProgress } from "rbb/components/reading/ScrollProgress";
 import { Button, Tag, Text } from "sonahang-ui";
 import styles from "./Header.module.css";
 import { ThemeToggle } from "./ThemeToggle";
@@ -44,6 +45,8 @@ export function Header({ onOpenNav }: HeaderProps) {
       <div className={styles.spacer} />
 
       <ThemeToggle />
+
+      <ScrollProgress />
     </header>
   );
 }

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SearchIcon } from "rbb/components/icons";
+import { useReadingProgress } from "rbb/components/reading/ReadingProgress";
 import type { DocMeta, DocSection } from "rbb/content/docs";
 import { useEffect, useMemo, useState } from "react";
 import { EmptyState, Input, Tag, Text } from "sonahang-ui";
@@ -30,6 +31,7 @@ function matches(doc: DocMeta, query: string): boolean {
 export function Sidebar({ sections, onNavigate }: SidebarProps) {
   const pathname = usePathname();
   const [query, setQuery] = useState("");
+  const { consent, progress, reset } = useReadingProgress();
 
   // "/" focuses search from anywhere, as long as the user isn't already typing.
   useEffect(() => {
@@ -94,6 +96,8 @@ export function Sidebar({ sections, onNavigate }: SidebarProps) {
               {section.docs.map((doc) => {
                 const href = `/docs/${doc.slug}`;
                 const active = pathname === href;
+                const read =
+                  consent === "granted" ? progress[doc.slug] : undefined;
                 return (
                   <li key={doc.slug}>
                     <Link
@@ -103,7 +107,22 @@ export function Sidebar({ sections, onNavigate }: SidebarProps) {
                       aria-current={active ? "page" : undefined}
                       onClick={onNavigate}
                     >
-                      <span className={styles.linkTitle}>{doc.title}</span>
+                      <span className={styles.linkTitle}>
+                        {doc.title}
+                        {read !== undefined && read > 0 && (
+                          <span
+                            className={styles.linkProgress}
+                            data-done={read >= 100 || undefined}
+                          >
+                            <span aria-hidden="true">
+                              {read >= 100 ? "✓" : `${read}%`}
+                            </span>
+                            <span className={styles.srOnly}>
+                              {read >= 100 ? "Read" : `${read}% read`}
+                            </span>
+                          </span>
+                        )}
+                      </span>
                       <span className={styles.linkSummary}>{doc.summary}</span>
                     </Link>
                   </li>
@@ -132,6 +151,20 @@ export function Sidebar({ sections, onNavigate }: SidebarProps) {
           Press <kbd className={styles.kbd}>/</kbd> to search
         </Text>
       </div>
+      {consent !== null && (
+        <div className={styles.privacy}>
+          <Text as="span" variant="caption" color="subtle">
+            Progress tracking {consent === "granted" ? "on" : "off"}
+          </Text>
+          <button
+            type="button"
+            className={styles.privacyButton}
+            onClick={reset}
+          >
+            Cookie preferences
+          </button>
+        </div>
+      )}
     </div>
   );
 }
