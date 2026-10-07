@@ -37,10 +37,19 @@ const SECTIONS: { id: string; title: string }[] = [
   { id: "getting-started", title: "Getting started" },
   { id: "guides", title: "Guides" },
   { id: "reference", title: "Reference" },
+  { id: "computer-intro", title: "Introduction of Computer" },
+  { id: "computer-architecture", title: "Computer Architecture" },
   {
     id: "networks",
     title: "Communication and Computer Network Technologies",
   },
+  { id: "operating-system", title: "Operating System and Information Systems" },
+  {
+    id: "database-web",
+    title:
+      "Database Management System, Database Design, Data Mining/Warehousing and Web Technology",
+  },
+  { id: "cybersecurity", title: "Cybersecurity and IT Policies" },
 ];
 
 const DOCS_DIR = path.join(process.cwd(), "src", "content", "docs");
