@@ -1,27 +1,25 @@
 /*
- * Layer order, declared before anything else is parsed.
+ * The reset lives inside the library's own layer, at zero specificity.
  *
  * sonahang-ui ships its CSS inside `@layer sonahang-ui`, and unlayered CSS
  * beats layered CSS whatever the specificity — so an unlayered reset like
- * `* { padding: 0 }` silently strips the padding off every component. Putting
- * the reset in an earlier layer fixes the ranking: reset loses to the library,
- * and every CSS module in this app (unlayered) still wins over both.
+ * `* { padding: 0 }` silently strips the padding off every component.
  *
- * This file is imported before the library stylesheet in the root layout, so
- * this statement is what establishes the order.
+ * A separate `reset` layer declared ahead of the library doesn't survive the
+ * production build: webpack emits the library stylesheet first, so the library
+ * declares its layer first and `reset` lands above it. Sharing the layer
+ * avoids depending on load order: within one layer specificity decides, and
+ * `:where()` scores zero, so every library class selector wins either way.
+ * Every CSS module in this app (unlayered) still wins over both.
  */
-@layer reset, sonahang-ui;
-
-@layer reset {
-  *,
-  *::before,
-  *::after {
+@layer sonahang-ui {
+  :where(*, *::before, *::after) {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
   }
 
-  a {
+  :where(a) {
     color: inherit;
     text-decoration: none;
   }

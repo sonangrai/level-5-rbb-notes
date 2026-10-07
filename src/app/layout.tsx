@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-// globals.css first: it declares the layer order the library stylesheet then
-// slots into. Swapping these two lines breaks that ranking.
+// Order-independent: globals.css shares the library's layer rather than
+// declaring a layer order, since the build reorders these anyway.
 import "./globals.css";
 import "sonahang-ui/style.css";
 
