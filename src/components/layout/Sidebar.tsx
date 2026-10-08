@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { SearchIcon } from "rbb/components/icons";
 import { useReadingProgress } from "rbb/components/reading/ReadingProgress";
 import type { DocMeta, DocSection } from "rbb/content/docs";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { EmptyState, Input, Tag, Text } from "sonahang-ui";
 import styles from "./Sidebar.module.css";
 
@@ -16,10 +16,14 @@ export type SidebarProps = {
   onNavigate?: () => void;
 };
 
-const SEARCH_ID = "sidebar-search";
-
-function searchInput(): HTMLInputElement | null {
-  return document.getElementById(SEARCH_ID) as HTMLInputElement | null;
+/**
+ * The search box of one Sidebar, if it is on screen. The shell renders two
+ * Sidebars — the desktop column and the mobile drawer — and only one of them
+ * is visible at a time, so the hidden one must not react to shortcuts.
+ */
+function visibleSearchInput(id: string): HTMLInputElement | null {
+  const input = document.getElementById(id) as HTMLInputElement | null;
+  return input?.offsetParent ? input : null;
 }
 
 function matches(doc: DocMeta, query: string): boolean {
@@ -32,6 +36,8 @@ export function Sidebar({ sections, onNavigate }: SidebarProps) {
   const pathname = usePathname();
   const [query, setQuery] = useState("");
   const { consent, progress, reset } = useReadingProgress();
+  // Unique per instance: a fixed id would be duplicated across the two Sidebars.
+  const searchId = useId();
 
   // "/" focuses search from anywhere, as long as the user isn't already typing.
   useEffect(() => {
@@ -44,16 +50,16 @@ export function Sidebar({ sections, onNavigate }: SidebarProps) {
 
       if (event.key === "/" && !typing) {
         event.preventDefault();
-        searchInput()?.focus();
+        visibleSearchInput(searchId)?.focus();
       }
-      if (event.key === "Escape" && target === searchInput()) {
+      if (event.key === "Escape" && target?.id === searchId) {
         setQuery("");
       }
     }
 
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, []);
+  }, [searchId]);
 
   const results = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -70,7 +76,7 @@ export function Sidebar({ sections, onNavigate }: SidebarProps) {
     <div className={styles.sidebar}>
       <div className={styles.search}>
         <Input
-          id={SEARCH_ID}
+          id={searchId}
           type="search"
           value={query}
           onChange={(event) => setQuery(event.target.value)}

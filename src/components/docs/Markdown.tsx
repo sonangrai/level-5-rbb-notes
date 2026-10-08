@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { slugify } from "rbb/content/markdown";
+import { createSlugger } from "rbb/content/markdown";
 import { Children, cloneElement, isValidElement, type ReactNode } from "react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -50,13 +50,14 @@ function stripMarker(children: ReactNode): ReactNode {
 }
 
 function Heading({
+  id,
   level,
   children,
 }: {
+  id: string;
   level: "heading-3" | "heading-4";
   children: ReactNode;
 }) {
-  const id = slugify(toText(children));
   return (
     <Text
       as={level === "heading-3" ? "h2" : "h3"}
@@ -71,10 +72,28 @@ function Heading({
   );
 }
 
+/**
+ * The headings need a fresh slugger per document so a repeated title gets a
+ * unique id, which is why they can't live in the shared `components` map.
+ */
+function headingComponents(): Components {
+  const slug = createSlugger();
+  const heading =
+    (level: "heading-3" | "heading-4"): Components["h2"] =>
+    ({ children }) => (
+      <Heading id={slug(toText(children))} level={level}>
+        {children}
+      </Heading>
+    );
+
+  return {
+    h1: heading("heading-3"),
+    h2: heading("heading-3"),
+    h3: heading("heading-4"),
+  };
+}
+
 const components: Components = {
-  h1: ({ children }) => <Heading level="heading-3">{children}</Heading>,
-  h2: ({ children }) => <Heading level="heading-3">{children}</Heading>,
-  h3: ({ children }) => <Heading level="heading-4">{children}</Heading>,
   h4: ({ children }) => (
     <Text variant="body" weight="semibold" className={styles.minorHeading}>
       {children}
@@ -178,7 +197,10 @@ const components: Components = {
 export function Markdown({ children }: { children: string }) {
   return (
     <div className={styles.prose}>
-      <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={{ ...components, ...headingComponents() }}
+      >
         {children}
       </ReactMarkdown>
     </div>

@@ -37,6 +37,8 @@ const SECTIONS: { id: string; title: string }[] = [
   { id: "getting-started", title: "Getting started" },
   { id: "guides", title: "Guides" },
   { id: "reference", title: "Reference" },
+  { id: "financial-institutions", title: "Financial Institutions in Nepal" },
+  { id: "banking-terminology", title: "Key Banking Terminology" },
   { id: "computer-intro", title: "Introduction of Computer" },
   { id: "computer-architecture", title: "Computer Architecture" },
   {
