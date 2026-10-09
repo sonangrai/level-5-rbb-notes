@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- The header's logo badge: LogoMark (icons.tsx) on the light-theme accent fill. -->
+  <rect width="32" height="32" rx="9" fill="#5d1fb8"/>
+  <g transform="translate(6.86 6.86) scale(0.762)" fill="none" stroke="#ece0ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19v15H6.5A2.5 2.5 0 0 0 4 20.5Z"/>
+    <path d="M9 8h6"/>
+  </g>
+</svg>

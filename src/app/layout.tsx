@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     default: "RBB Notes",
     template: "%s · RBB Notes",
   },
-  description: "A documentation and notes workspace built with sonahang-ui.",
+  description: "A summary notes for the Rastriya Banijya Bank, level 5 IT.",
 };
 
 /**
