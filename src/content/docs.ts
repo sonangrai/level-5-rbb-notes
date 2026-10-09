@@ -39,6 +39,10 @@ const SECTIONS: { id: string; title: string }[] = [
   { id: "reference", title: "Reference" },
   { id: "financial-institutions", title: "Financial Institutions in Nepal" },
   { id: "banking-terminology", title: "Key Banking Terminology" },
+  { id: "banking-law", title: "Banking Related Laws" },
+  { id: "organizational-behavior", title: "Organizational Behavior" },
+  { id: "other-laws", title: "Other Related Laws" },
+  { id: "digital-payments", title: "Digital/Electronic Payment Systems" },
   { id: "computer-intro", title: "Introduction of Computer" },
   { id: "computer-architecture", title: "Computer Architecture" },
   {
