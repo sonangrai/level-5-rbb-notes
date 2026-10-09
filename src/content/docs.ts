@@ -10,6 +10,7 @@ import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import { cache } from "react";
+import type { GroupId } from "./groups";
 
 export type DocMeta = {
   slug: string;
@@ -29,33 +30,57 @@ export type Doc = DocMeta & {
 export type DocSection = {
   id: string;
   title: string;
+  /** The syllabus group the section belongs to, if any. */
+  group?: GroupId;
   docs: DocMeta[];
 };
 
-/** Sidebar groups, in the order they appear. A file's `section` names one. */
-const SECTIONS: { id: string; title: string }[] = [
+/**
+ * Sidebar sections, in the order they appear. A file's `section` names one,
+ * and each section's `group` places it under Group A or B. Keep a group's
+ * sections together: documents are ordered by their section's position here.
+ */
+const SECTIONS: { id: string; title: string; group?: GroupId }[] = [
   { id: "getting-started", title: "Getting started" },
   { id: "guides", title: "Guides" },
   { id: "reference", title: "Reference" },
-  { id: "financial-institutions", title: "Financial Institutions in Nepal" },
-  { id: "banking-terminology", title: "Key Banking Terminology" },
-  { id: "banking-law", title: "Banking Related Laws" },
-  { id: "organizational-behavior", title: "Organizational Behavior" },
-  { id: "other-laws", title: "Other Related Laws" },
-  { id: "digital-payments", title: "Digital/Electronic Payment Systems" },
-  { id: "computer-intro", title: "Introduction of Computer" },
-  { id: "computer-architecture", title: "Computer Architecture" },
+  {
+    id: "financial-institutions",
+    title: "Financial Institutions in Nepal",
+    group: "a",
+  },
+  { id: "banking-terminology", title: "Key Banking Terminology", group: "a" },
+  { id: "banking-law", title: "Banking Related Laws", group: "a" },
+  {
+    id: "organizational-behavior",
+    title: "Organizational Behavior",
+    group: "a",
+  },
+  { id: "other-laws", title: "Other Related Laws", group: "a" },
+  {
+    id: "digital-payments",
+    title: "Digital/Electronic Payment Systems",
+    group: "a",
+  },
+  { id: "computer-intro", title: "Introduction of Computer", group: "b" },
+  { id: "computer-architecture", title: "Computer Architecture", group: "b" },
   {
     id: "networks",
     title: "Communication and Computer Network Technologies",
+    group: "b",
   },
-  { id: "operating-system", title: "Operating System and Information Systems" },
+  {
+    id: "operating-system",
+    title: "Operating System and Information Systems",
+    group: "b",
+  },
   {
     id: "database-web",
     title:
       "Database Management System, Database Design, Data Mining/Warehousing and Web Technology",
+    group: "b",
   },
-  { id: "cybersecurity", title: "Cybersecurity and IT Policies" },
+  { id: "cybersecurity", title: "Cybersecurity and IT Policies", group: "b" },
 ];
 
 const DOCS_DIR = path.join(process.cwd(), "src", "content", "docs");
@@ -121,9 +146,10 @@ export const getAllDocs = cache((): Doc[] => {
 export const getSections = cache((): DocSection[] => {
   const docs = getAllDocs();
 
-  return SECTIONS.map(({ id, title }) => ({
+  return SECTIONS.map(({ id, title, group }) => ({
     id,
     title,
+    group,
     docs: docs
       .filter((doc) => doc.section === id)
       .map(({ body: _body, ...meta }) => meta),

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowLeftIcon, ArrowRightIcon } from "rbb/components/icons";
 import type { Doc, DocSection } from "rbb/content/docs";
 import { getNeighbours } from "rbb/content/docs";
+import { getGroup, groupHref } from "rbb/content/groups";
 import { extractHeadings, formatDate } from "rbb/content/markdown";
 import { Breadcrumb, BreadcrumbItem, Tag, Text } from "sonahang-ui";
 import styles from "./DocArticle.module.css";
@@ -17,6 +18,7 @@ export function DocArticle({
 }) {
   const headings = extractHeadings(doc.body);
   const { previous, next } = getNeighbours(doc.slug);
+  const group = getGroup(section?.group);
 
   return (
     <div className={styles.layout}>
@@ -26,6 +28,11 @@ export function DocArticle({
             <BreadcrumbItem>
               <Link href="/">Notes</Link>
             </BreadcrumbItem>
+            {group && (
+              <BreadcrumbItem>
+                <Link href={groupHref(group.id)}>{group.label}</Link>
+              </BreadcrumbItem>
+            )}
             {section && <BreadcrumbItem>{section.title}</BreadcrumbItem>}
             <BreadcrumbItem>{doc.title}</BreadcrumbItem>
           </Breadcrumb>

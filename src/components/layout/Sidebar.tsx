@@ -5,8 +5,9 @@ import { usePathname } from "next/navigation";
 import { SearchIcon } from "rbb/components/icons";
 import { useReadingProgress } from "rbb/components/reading/ReadingProgress";
 import type { DocMeta, DocSection } from "rbb/content/docs";
+import { groupHref, groupSections } from "rbb/content/groups";
 import { useEffect, useId, useMemo, useState } from "react";
-import { EmptyState, Input, Tag, Text } from "sonahang-ui";
+import { EmptyState, Input, Text } from "sonahang-ui";
 import styles from "./Sidebar.module.css";
 
 export type SidebarProps = {
@@ -87,55 +88,72 @@ export function Sidebar({ sections, onNavigate }: SidebarProps) {
       </div>
 
       <nav className={styles.nav} aria-label="Documents">
-        {results.map((section) => (
-          <section key={section.id} className={styles.section}>
-            <Text
-              as="h2"
-              variant="caption"
-              color="subtle"
-              weight="semibold"
-              className={styles.sectionTitle}
-            >
-              {section.title}
-            </Text>
-            <ul className={styles.list}>
-              {section.docs.map((doc) => {
-                const href = `/docs/${doc.slug}`;
-                const active = pathname === href;
-                const read =
-                  consent === "granted" ? progress[doc.slug] : undefined;
-                return (
-                  <li key={doc.slug}>
-                    <Link
-                      href={href}
-                      className={styles.link}
-                      data-active={active || undefined}
-                      aria-current={active ? "page" : undefined}
-                      onClick={onNavigate}
-                    >
-                      <span className={styles.linkTitle}>
-                        {doc.title}
-                        {read !== undefined && read > 0 && (
-                          <span
-                            className={styles.linkProgress}
-                            data-done={read >= 100 || undefined}
-                          >
-                            <span aria-hidden="true">
-                              {read >= 100 ? "✓" : `${read}%`}
-                            </span>
-                            <span className={styles.srOnly}>
-                              {read >= 100 ? "Read" : `${read}% read`}
-                            </span>
+        {groupSections(results).map(({ group, sections: grouped }) => (
+          <div key={group?.id ?? "ungrouped"} className={styles.group}>
+            {group && (
+              <Link
+                href={groupHref(group.id)}
+                className={styles.groupHeading}
+                data-active={pathname === groupHref(group.id) || undefined}
+                aria-current={
+                  pathname === groupHref(group.id) ? "page" : undefined
+                }
+                onClick={onNavigate}
+              >
+                <span className={styles.groupLabel}>{group.label}</span>
+                <span className={styles.groupTitle}>{group.title}</span>
+              </Link>
+            )}
+            {grouped.map((section) => (
+              <section key={section.id} className={styles.section}>
+                <Text
+                  as="h2"
+                  variant="caption"
+                  color="subtle"
+                  weight="semibold"
+                  className={styles.sectionTitle}
+                >
+                  {section.title}
+                </Text>
+                <ul className={styles.list}>
+                  {section.docs.map((doc) => {
+                    const href = `/docs/${doc.slug}`;
+                    const active = pathname === href;
+                    const read =
+                      consent === "granted" ? progress[doc.slug] : undefined;
+                    return (
+                      <li key={doc.slug}>
+                        <Link
+                          href={href}
+                          className={styles.link}
+                          data-active={active || undefined}
+                          aria-current={active ? "page" : undefined}
+                          onClick={onNavigate}
+                        >
+                          <span className={styles.linkTitle}>
+                            {doc.title}
+                            {read !== undefined && read > 0 && (
+                              <span
+                                className={styles.linkProgress}
+                                data-done={read >= 100 || undefined}
+                              >
+                                <span aria-hidden="true">
+                                  {read >= 100 ? "✓" : `${read}%`}
+                                </span>
+                                <span className={styles.srOnly}>
+                                  {read >= 100 ? "Read" : `${read}% read`}
+                                </span>
+                              </span>
+                            )}
                           </span>
-                        )}
-                      </span>
-                      <span className={styles.linkSummary}>{doc.summary}</span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </section>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
+            ))}
+          </div>
         ))}
 
         {results.length === 0 && (
@@ -149,10 +167,10 @@ export function Sidebar({ sections, onNavigate }: SidebarProps) {
       </nav>
 
       <div className={styles.footer}>
-        <Tag variant="secondary">
+        <Text as="span" variant="caption" color="subtle">
           {sections.reduce((total, section) => total + section.docs.length, 0)}{" "}
           documents
-        </Tag>
+        </Text>
         <Text as="span" variant="caption" color="subtle">
           Press <kbd className={styles.kbd}>/</kbd> to search
         </Text>
